@@ -3509,17 +3509,21 @@ class UnifiedBotCommands(commands.Cog):
                 })
             
             if successful_sends > 0:
+                additional_info = "The order has been distributed across the sect.\n\n"
+                for field in result_fields:
+                    additional_info += f"**{field['name']}**\n{field['value']}\n\n"
+                
                 final_embed = create_success_embed(
                     "📜 Heavenly Order Delivered",
                     f"Your message has been sent to {successful_sends} members",
-                    "The order has been distributed across the sect.",
-                    result_fields
+                    additional_info.strip()
                 )
             else:
+                additional_info = f"{result_fields[0]['value']}\nAll deliveries failed - check if members have DMs enabled."
                 final_embed = create_error_embed(
                     "📜 Heavenly Order Failed",
                     "Could not deliver the message to any members",
-                    "\n".join(result_fields[0]["value"].split("\n") + ["All deliveries failed - check if members have DMs enabled."])
+                    additional_info
                 )
             
             await interaction.followup.send(embed=final_embed)
